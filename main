@@ -1,0 +1,50 @@
+import java.util.Scanner;
+import java.io.IOException;
+
+
+public class Main {
+    public static void main(String[] args) {
+            System.out.println("Enter the path:");
+            Scanner scanner = new Scanner(System.in);
+            String p = scanner.next();
+            System.out.println("Enter the dir. name:");
+            String d = scanner.next();
+            boolean isExistWorkDir = FileUtils.checkWorkDirectory(p, d);
+            System.out.println("exist:" + isExistWorkDir);
+            System.out.println("Enter the file:");
+            String f = scanner.next();
+            if(isExistWorkDir){
+                String data = "String";
+                try {
+                    FileUtils.writeStringToFile(p + "/" + d + "/" + f, data);
+                }catch(IOException ex){
+                    System.out.println("Error:" + ex.getMessage());
+                }
+            }
+            System.out.println("enter the hex string");
+            String h = scanner.next();
+            try{
+                byte[] ar = FileUtils.hexStringToByteArray(h);
+                System.out.println("Hexstring len:" + ar.length);
+                for(int i = 0;i < ar.length;i++)
+                    ar[i] = (byte) (ar[i] ^ 0x1A);
+            }catch(IllegalArgumentException il){
+            System.out.println("При чтении файла возникла ошибка:" + il.getMessage());
+            }
+            try{
+                byte[] array = FileUtils.readByteFromFile(p + "/" + d + "/" + f);
+                System.out.println("Array len " + array.length);
+                for(int i = 0;i < array.length;i++)
+                    array[i] = (byte) (array[i] ^ 0x1A);
+                FileUtils.writeFile(p + "/" + d + "/" + f, array);
+                System.out.println("Final array len: " + array.length);
+            }catch(IOException ex){
+                System.out.println("При чтении файла возникла ошибка:" + ex.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+
+    }
+
+}
